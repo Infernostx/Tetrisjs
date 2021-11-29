@@ -205,7 +205,7 @@ let night;
 //let interval;  
 function setup() {
   
-  createCanvas(windowWidth/6, windowHeight);
+  createCanvas(windowWidth/6, windowHeight*0.8);
     widthRatio = width / dimX;
     heightRatio = height / dimY;
     tablero = new Board(dimX,dimY);
