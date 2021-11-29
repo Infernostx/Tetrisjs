@@ -46,7 +46,9 @@ const shapes = {
       this.shapeId = id.toLowerCase();
       this.block = shapes[this.shapeId];
       this.blockIndex = floor(random(this.block.shape.length));
+      
       this.color = shapes[this.shapeId].colors;
+      
   
       this.pos = {
         //x: 4,
@@ -75,6 +77,14 @@ const shapes = {
       }
     }
   }
+
+colorChange() {
+  if (colorPicker.color() === 'white' || this.parentField.isCollide()) {
+    this.color = shapes[this.shapeId].colors;
+  }
+  else { this.color = colorPicker.color(); }
+
+}
  /*  split() {
     let splitted = [];
     for (let x = 0; x < 4; x++) {
@@ -179,9 +189,9 @@ class Board {
         for (let x = 0; x < 4; x++) {
           for (let y = 0; y < 4; y++) {
             if (this.activeTet.shape && this.activeTet.shape[y] && this.activeTet.shape[y][x]) {
-              if (this.activeTet.pos.y +y >= dimY) return false;
+              if (this.activeTet.pos.y +y >= dimY*0.8) return false;
               if (this.activeTet.pos.x +x < 0) return false;
-              if (this.activeTet.pos.x +x >= dimX) return false;
+              if (this.activeTet.pos.x +x >= dimX*0.9) return false;
               else return true;
             }
           }
@@ -202,6 +212,7 @@ let diffSlider;
 let widthRatio;
 let heightRatio;
 let night;
+let colorPicker;
 //let interval;  
 function setup() {
   
@@ -226,11 +237,15 @@ function setup() {
   night = createCheckbox('Night mode?', false);
   night.changed(nightmode);
   night.position(width + 100, (height+100) / 2);
+  colorPicker = createColorPicker('white');
+  colorPicker.position(width + 100, (height + 200) / 2);
 }
 
   function draw() {
     background(diffSlider.value()*50,55,255/diffSlider.value());
     tablero.draw();
+    tablero.activeTet.colorChange();
+    //colorChange(colorPicker.color);
     //tick = 2000 / diffSlider.value();
     
     
@@ -258,24 +273,26 @@ function nightmode(){
   }
 }
 /* function difficulty() {
+  let dtick=tick;
   let diff=diffSlider.value();
   switch (diff){
     case 1:
-      tick = tick.lv1;
+      dtick = tick.lv1;
       break;
     case 2:
-      tick = tick.lv2;
+      dtick = tick.lv2;
       break;
     case 3:
-      tick = tick.lv3;
+      dtick = tick.lv3;
       break;
     case 4:
-      tick = tick.lv4;
+      dtick = tick.lv4;
       break;
     case 5:
-      tick = tick.lv5;
+      dtick = tick.lv5;
       break;
   } 
+  return dtick;
 
 }*/
 
@@ -301,9 +318,10 @@ function nightmode(){
         tablero.activeTet.move("left");
         break;
       case 80:
-        tablero.activeTet = null;
-        tablero.newTetromino();
+        //tablero.activeTet = null;
+        //tablero.newTetromino();
         //tablero.activeTet.rotate();
+        tablero.activeTet.colorChange();
         break;
       case "ArrowDown":
         tablero.activeTet.rotate();

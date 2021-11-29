@@ -44,6 +44,7 @@ canvas{
 .left{
     float: left;
     width: 28%;
+    overflow:hidden;
 }
 .sleft{
     float: left;
@@ -64,7 +65,8 @@ canvas{
     
     float: left;
     width: 28%;
-    margin: 1%; 
+    margin: 1%;
+    overflow:hidden; 
 }
 
 .bottom{
