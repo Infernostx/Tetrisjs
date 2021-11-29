@@ -1,37 +1,40 @@
+new p5();
+const dimX = 10;
+const dimY = 25;
 const shapes = {
-    i:{
-        color: color('cyan'),
-        shape: [0x0F00, 0x4444, 0x00F0, 0x4444]
-    },
-    l:{
-        color:color('orange'),
-        shape: [0x4460, 0x0E80, 0xC440, 0x2E00]
-    },
-    j:{
-        color:color('blue'),
-        shape: [0x44C0, 0x8E00, 0x6440, 0x0E20]
-    },
-    t:{
-        color:color('purple'),
-        shape: [0x0E40, 0x4C40, 0x4E00, 0x4640]
-    },
-    s:{
-        color:color('green'),
-        shape: [0x8C40, 0x8C40, 0x6C00, 0x4620]
-    },
-    z:{
-        color:color('red'),
-        shape: [0x0C60, 0x4C80, 0xC600, 0x2640]
-    },
-    o:{
-        color:color('yellow'),
-        shape: [0xCC00, 0xCC00, 0xCC00, 0xCC00]
-    },
-    ".": {
-      shapes: [0x8000],
-      color: 'white'
-    }
-  };
+  i: {
+    colors: color('cyan'),
+    shape: [0x0F00, 0x4444, 0x00F0, 0x4444]
+  },
+  l: {
+    colors: color('orange'),
+    shape: [0x4460, 0x0E80, 0xC440, 0x2E00]
+  },
+  j: {
+    colors: color('blue'),
+    shape: [0x44C0, 0x8E00, 0x6440, 0x0E20]
+  },
+  t: {
+    colors: color('purple'),
+    shape: [0x0E40, 0x4C40, 0x4E00, 0x4640]
+  },
+  s: {
+    colors: color('green'),
+    shape: [0x8C40, 0x8C40, 0x6C00, 0x4620]
+  },
+  z: {
+    colors: color('red'),
+    shape: [0x0C60, 0x4C80, 0xC600, 0x2640]
+  },
+  o: {
+    colors: color('yellow'),
+    shape: [0xCC00, 0xCC00, 0xCC00, 0xCC00]
+  },
+  ".": {
+    shapes: [0x8000],
+    colors: 'white'
+  }
+};
   class Tetromino {
     constructor(id, parentField) {
       if (["i", "j", "l", "o", "s", "t", "z", "."].indexOf(id.toLowerCase()) < 0) {
@@ -43,11 +46,11 @@ const shapes = {
       this.shapeId = id.toLowerCase();
       this.block = shapes[this.shapeId];
       this.blockIndex = floor(random(this.block.shape.length));
-      this.color = shapes[this.shapeId].color;
+      this.color = shapes[this.shapeId].colors;
   
       this.pos = {
-        x: 4,
-        //x: (this.parentField.dimX)/2,
+        //x: 4,
+        x: (this.parentField.dimX)/2,
         y: 2,
       };
     }
@@ -55,14 +58,17 @@ const shapes = {
   
   draw() {
     this.updateShape();
-  
+    //this.isCollide();
     for (let x = 0; x < 4; x++) {
       for (let y = 0; y < 4; y++) {
   
-        if (this.shape[y] && this.shape[y][x]) {
+        if (this.shape[y]&&this.shape[y][x]) {
           fill(this.color);
+          stroke('white');
+          strokeWeight(2);
         } else {
           noFill();
+          noStroke();
         }
   
         rect((this.pos.x + x) * widthRatio, (this.pos.y + y) * heightRatio, widthRatio, heightRatio);
@@ -103,22 +109,22 @@ const shapes = {
     console.log(test); */
   }
   move(dir){
-   
-    /* for (let x = 0; x < 4; x++) {
+   if (this.parentField.isCollide()){
+    for (let x = 0; x < 4; x++) {
       for (let y = 0; y < 4; y++) {
-    while(this.pos.x+x<dimX && this.pos.y+y<dimY){
+    
       
       if(dir==="right")
-      this.pos.x +=1;
+      this.pos.x +=2.5/dimX;
       if(dir==="left")
-      this.pos.x -=1;
+      this.pos.x -=2.5/dimX;
       if(dir==="down")
-      this.pos.y +=0.5;
+      this.pos.y +=4.68/dimY;
       else break;
 
-    }
+      }
   }
-} */
+}
   }
 }
 class Board {
@@ -173,42 +179,113 @@ class Board {
         for (let x = 0; x < 4; x++) {
           for (let y = 0; y < 4; y++) {
             if (this.activeTet.shape && this.activeTet.shape[y] && this.activeTet.shape[y][x]) {
-              if (this.activeTet.pos.y + y >= dimY) return false;
-              if (this.activeTet.pos.x + x < 0) return false;
-              if (this.activeTet.pos.x + x >= dimX) return false;
+              if (this.activeTet.pos.y +y >= dimY) return false;
+              if (this.activeTet.pos.x +x < 0) return false;
+              if (this.activeTet.pos.x +x >= dimX) return false;
+              else return true;
             }
           }
         }
       }
     }
+/* let tick={
+  lv1: 2000,
+  lv2: 1800,
+  lv3: 1600,
+  lv4: 1150,
+  lv5: 1000
+}; */
+let tick = 2000;
 let tablero;
-const dimX = 20;
-const dimY = 20;
+let button;
+let diffSlider;
 let widthRatio;
 let heightRatio;
-let interval;  
+let night;
+//let interval;  
 function setup() {
-  createCanvas(windowWidth/3, windowHeight);
+  
+  createCanvas(windowWidth/6, windowHeight);
     widthRatio = width / dimX;
     heightRatio = height / dimY;
     tablero = new Board(dimX,dimY);
-    /* interval = setInterval(() => {
-     if (!tablero.gameOver)
-      tablero.animate()
-    }, 2000); */
-  }
+  
+  diffSlider = createSlider(1, 5, 1);
+  diffSlider.position(width + 20 / 3, (height + 60) / 2);
+  diffSlider.style('width', '50px');
+
+  //tick = 7000 / diffSlider.value();
+  interval = setInterval(() => {
+    if (!tablero.gameOver)
+      tablero.activeTet.move('down');
+  }, (tick / diffSlider.value()));
+  
+  button = createButton('Reset');
+  button.position(width + 20 / 3, height/2);
+  button.mousePressed(reset);
+  night = createCheckbox('Night mode?', false);
+  night.changed(nightmode);
+  night.position(width + 20 / 3, (height+100) / 2);
+}
 
   function draw() {
-    background(66);
+    background(diffSlider.value()*50,55,255/diffSlider.value());
     tablero.draw();
+    //tick = 2000 / diffSlider.value();
+    nightmode(radio.value());
+    
+    
     
   }
+ //todo add to board 
+function reset() {
+  delete tablero;
+  tablero = new Board(dimX, dimY);
+
+}
+function nightmode(){
+  switch(night.checked()){
+    case true:
+      document.body.style.backgroundColor = "black";
+      document.body.style.color = "white";
+    break;
+    case false:
+      document.body.style.backgroundColor = "white";
+      document.body.style.color = "black";
+      break;
+    default:
+      break;  
+  }
+}
+/* function difficulty() {
+  let diff=diffSlider.value();
+  switch (diff){
+    case 1:
+      tick = tick.lv1;
+      break;
+    case 2:
+      tick = tick.lv2;
+      break;
+    case 3:
+      tick = tick.lv3;
+      break;
+    case 4:
+      tick = tick.lv4;
+      break;
+    case 5:
+      tick = tick.lv5;
+      break;
+  } 
+
+}*/
+
   function keyPressed() {
     if (keyCode === UP_ARROW) {
       tablero.activeTet.rotate();
     }
     else if (keyCode === RIGHT_ARROW){
       tablero.activeTet.move("right");
+      
     }
     else if (keyCode === LEFT_ARROW){
       tablero.activeTet.move("left");
@@ -217,14 +294,16 @@ function setup() {
       tablero.activeTet.move("down");
     }
     switch (keyCode) {
-      /* case "ArrowRight":
+      case "ArrowRight":
         tablero.activeTet.move("right");
         break;
       case "ArrowLeft":
         tablero.activeTet.move("left");
-        break; */
-      case "P":
-        tablero.activeTet.rotate();
+        break;
+      case 80:
+        tablero.activeTet = null;
+        tablero.newTetromino();
+        //tablero.activeTet.rotate();
         break;
       case "ArrowDown":
         tablero.activeTet.rotate();
