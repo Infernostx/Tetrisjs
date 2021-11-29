@@ -211,7 +211,7 @@ function setup() {
     tablero = new Board(dimX,dimY);
   
   diffSlider = createSlider(1, 5, 1);
-  diffSlider.position(width + 20 / 3, (height + 60) / 2);
+  diffSlider.position(width + 100, (height + 60) / 2);
   diffSlider.style('width', '50px');
 
   //tick = 7000 / diffSlider.value();
@@ -221,18 +221,18 @@ function setup() {
   }, (tick / diffSlider.value()));
   
   button = createButton('Reset');
-  button.position(width + 20 / 3, height/2);
+  button.position(width + 100, height/2);
   button.mousePressed(reset);
   night = createCheckbox('Night mode?', false);
   night.changed(nightmode);
-  night.position(width + 20 / 3, (height+100) / 2);
+  night.position(width + 100, (height+100) / 2);
 }
 
   function draw() {
     background(diffSlider.value()*50,55,255/diffSlider.value());
     tablero.draw();
     //tick = 2000 / diffSlider.value();
-    nightmode(radio.value());
+    
     
     
     
