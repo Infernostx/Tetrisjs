@@ -35,7 +35,7 @@ const shapes = {
     colors: 'white'
   }
 };
-  class Tetromino {
+  class  Tetromino {
     constructor(id, parentField) {
       if (["i", "j", "l", "o", "s", "t", "z", "."].indexOf(id.toLowerCase()) < 0) {
         console.error("Error!");
@@ -64,7 +64,7 @@ const shapes = {
     for (let x = 0; x < 4; x++) {
       for (let y = 0; y < 4; y++) {
   
-        if (this.shape[y]&&this.shape[y][x]) {
+        if (this.shape[y][x]) {
           fill(this.color);
           stroke('white');
           strokeWeight(2);
@@ -79,7 +79,7 @@ const shapes = {
   }
 
 colorChange() {
-  if (colorPicker.color() === 'white' || this.parentField.isCollide()) {
+  if (colorPicker.color() === 'white' /* || this.parentField.isCollide() */) {
     this.color = shapes[this.shapeId].colors;
   }
   else { this.color = colorPicker.color(); }
@@ -113,12 +113,13 @@ colorChange() {
       this.blockIndex = (this.blockIndex + 1) % (this.block.shapes.length);
     } */
   }
+  // Genera del numero hexadecimal, las distintas posiciones de las piezas que forman un tetromino en una matriz
   updateShape() {
     this.shape = (this.block.shape[this.blockIndex]).toString(16).padStart(4, '0').split('').map(row => parseInt(row, 16).toString(2).padStart(4, '0').split('').map(num => parseInt(num)));
-    /* let test = (this.block.shape[this.blockIndex]).toString(16).padStart(4, '0').split('').map(row => parseInt(row, 16).toString(2).padStart(4, '0').split('').map(num => parseInt(num)));
-    console.log(test); */
-  }
-  move(dir){
+    let test = (this.block.shape[this.blockIndex]).toString(16).padStart(4, '0').split('').map(row => parseInt(row, 16).toString(2).padStart(4, '0').split('').map(num => parseInt(num)));
+    console.log(test);
+    }
+    move(dir) {
    if (this.parentField.isCollide()){
     for (let x = 0; x < 4; x++) {
       for (let y = 0; y < 4; y++) {
@@ -146,21 +147,7 @@ class Board {
       this.score = 0;
       this.gameOver = false;
     }
-   /*  animate() {
-      if (this.gameOver) return false;
-      if (!this.activeTet.move()) {
-        this.tetrominos.push(...this.activeTet.split());
-        this.activeTet = this.newTetromino();
-        this.activeTet.updateShape();
-        if (!this.moveClear(this.activeTet)) {
-          this.activeTet = null;
-          this.gameOver = true;
-        }
-        let i = dimY;
-        while (this.checkRow() && i >= 0) i--;
-      }
-    } */
-  
+
     draw() {
         noFill();
         strokeWeight(0.5);
@@ -173,9 +160,9 @@ class Board {
         }
     
         if (this.activeTet) this.activeTet.draw();
-        for (let tet of this.tetrominos) {
+       /*  for (let tet of this.tetrominos) {
           tet.draw();
-        }
+        } */
       }
     
       newTetromino() {
@@ -215,25 +202,27 @@ let night;
 let colorPicker;
 //let interval;  
 function setup() {
-  
+  //Canvas
   createCanvas(windowWidth/6, windowHeight*0.8);
     widthRatio = width / dimX;
     heightRatio = height / dimY;
     tablero = new Board(dimX,dimY);
-  
+  //Slider
   diffSlider = createSlider(1, 5, 1);
   diffSlider.position(width + 100, (height + 60) / 2);
   diffSlider.style('width', '50px');
-
+  //Intervalo
   //tick = 7000 / diffSlider.value();
   interval = setInterval(() => {
     if (!tablero.gameOver)
       tablero.activeTet.move('down');
+      //tablero.animate(),
   }, (tick / diffSlider.value()));
-  
+  //Boton reset
   button = createButton('Reset');
   button.position(width + 100, height/2);
   button.mousePressed(reset);
+  //Checkbox night mode
   night = createCheckbox('Night mode?', false);
   night.changed(nightmode);
   night.position(width + 100, (height+100) / 2);
@@ -254,15 +243,17 @@ function setup() {
   }
  //todo add to board 
 function reset() {
-  delete tablero;
+  tablero = null;
   tablero = new Board(dimX, dimY);
 
 }
+//Cambia la interfaz a nightmode
 function nightmode(){
   switch(night.checked()){
     case true:
       document.body.style.backgroundColor = "black";
       document.body.style.color = "white";
+      
     break;
     case false:
       document.body.style.backgroundColor = "white";
@@ -295,7 +286,7 @@ function nightmode(){
   return dtick;
 
 }*/
-
+//Controles
   function keyPressed() {
     if (keyCode === UP_ARROW) {
       tablero.activeTet.rotate();

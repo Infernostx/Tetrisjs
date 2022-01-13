@@ -1,6 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  /* text-align: center; */
 }
 
 h2{
@@ -22,8 +23,7 @@ canvas{
     display: inline-block;
     overflow:hidden;
     margin-top:1%;
-    
-    margin-bottom: -5%;
+
 }
  .tetris{
   display: inline-block;
